@@ -26,15 +26,10 @@
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
-    z-index: 9999 !important;
   }
-
-  /* Hidden SoundCloud iframe */
-  #sc-widget {
-    display: none;
-  }
-
-  /* Custom Music Button */
+ 
+  #sc-widget { display: none; }
+ 
   #music-btn {
     position: fixed;
     bottom: 20px;
@@ -232,10 +227,7 @@
   }
  
   #host { padding: 2rem; }
-  .host-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+  .host-header { text-align: center; margin-bottom: 2rem; }
   .host-title {
     font-family: 'Cinzel', serif;
     font-size: 1.4rem;
@@ -318,7 +310,6 @@
     height: 2px;
     background: rgba(201,168,76,0.15);
     margin: 0 auto 2rem;
-    position: relative;
   }
   .q-progress-fill {
     height: 100%;
@@ -364,11 +355,7 @@
   }
   .choice:hover { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.5); }
   .choice:hover::before { transform: scaleY(1); }
-  .choice.selected {
-    background: rgba(201,168,76,0.15);
-    border-color: var(--gold);
-    color: var(--gold-light);
-  }
+  .choice.selected { background: rgba(201,168,76,0.15); border-color: var(--gold); color: var(--gold-light); }
   .choice.selected::before { transform: scaleY(1); }
   .choice-letter {
     font-family: 'Cinzel', serif;
@@ -380,12 +367,7 @@
   }
  
   #processing { text-align: center; }
-  .processing-container {
-    min-height: 120px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center;
-  }
+  .processing-container { min-height: 120px; display: flex; flex-direction: column; justify-content: center; }
   .processing-line {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(1.1rem, 3vw, 1.5rem);
@@ -473,7 +455,6 @@
   .gate-label { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.4em; color: var(--gold); opacity: 0.6; margin-bottom: 2rem; text-transform: uppercase; }
   .gate-options { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
  
-  /* Mobile Responsive */
   @media (max-width: 600px) {
     .screen { padding: 1.5rem 1rem; justify-content: flex-start; padding-top: 4rem; }
     .btn { padding: 0.9rem 1.5rem; width: 100%; max-width: 300px; }
@@ -493,17 +474,16 @@
 </style>
 </head>
 <body>
-
+ 
 <!-- Hidden SoundCloud Widget -->
 <iframe id="sc-widget"
   src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/basilis1991/melody-puzzles-3a-example&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false"
-  style="display:none;"
-  allow="autoplay">
+  style="display:none;" allow="autoplay">
 </iframe>
-
-<!-- Custom Music Button -->
+ 
+<!-- Music Button -->
 <button id="music-btn" onclick="toggleMusic()">▶</button>
-
+ 
 <canvas id="letter-canvas"></canvas>
  
 <div id="access-gate">
@@ -523,13 +503,11 @@
   <h1 class="title">Under the Spell<br><em>of Words</em></h1>
   <div class="ornament"><span>✦</span></div>
   <p class="subtitle">Discover the language that reflects who you truly are.</p>
- 
   <div class="input-wrap">
     <label>Your Name</label>
     <input type="text" id="name-input" placeholder="Write your name here..." maxlength="40" autocomplete="off"/>
   </div>
   <button class="btn btn-primary" id="enter-btn" onclick="enterSession()">Enter the World of Languages</button>
- 
   <div class="credit">MANDILI Touhami &amp; ZABER Siradj · 2025/2026</div>
 </div>
  
@@ -546,19 +524,16 @@
     <p class="subtitle-tag">Host Dashboard</p>
     <h2 class="host-title">THE SOUL LANGUAGE TEST</h2>
   </div>
- 
   <div class="panel" style="max-width:800px;width:100%;">
     <p class="panel-title">✦ Participants Joined</p>
     <div id="names-list"></div>
     <p id="join-count" style="margin-top:0.8rem;font-size:0.8rem;color:rgba(201,168,76,0.5);font-family:'Cinzel',serif;letter-spacing:0.2em;">0 PARTICIPANTS</p>
   </div>
- 
   <div class="host-btn-row">
     <button class="btn btn-primary" id="host-start-btn" onclick="hostStartTest()">▶ Start the Test</button>
     <button class="btn btn-ghost" onclick="showResults()">View Results</button>
     <button class="btn btn-ghost" onclick="resetAll()">Reset Session</button>
   </div>
- 
   <div id="results-groups"></div>
 </div>
  
@@ -603,36 +578,61 @@
   </div>
 </div>
  
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+ 
+  const firebaseConfig = {
+    apiKey: "AIzaSyD8GkttvXe0FpgVMNSF4P19YI0k-sndAbc",
+    authDomain: "soullanguage-452f8.firebaseapp.com",
+    databaseURL: "https://soullanguage-452f8-default-rtdb.firebaseio.com",
+    projectId: "soullanguage-452f8",
+    storageBucket: "soullanguage-452f8.firebasestorage.app",
+    messagingSenderId: "388086252513",
+    appId: "1:388086252513:web:027faecf01223fb45848a0"
+  };
+ 
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+ 
+  // Expose to global scope
+  window._db = db;
+  window._ref = ref;
+  window._set = set;
+  window._get = get;
+  window._onValue = onValue;
+  window._update = update;
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
+ 
 <!-- SoundCloud Widget API -->
 <script src="https://w.soundcloud.com/player/api.js"></script>
-
+ 
 <script>
 // ══════════════════════════════════════════
-//   MUSIC CONTROLS (SoundCloud Widget)
+//   MUSIC
 // ══════════════════════════════════════════
 let widget = null;
 let isPlaying = false;
 let widgetReady = false;
-
+ 
 window.addEventListener('load', function() {
   const iframeEl = document.getElementById('sc-widget');
   widget = SC.Widget(iframeEl);
-
   widget.bind(SC.Widget.Events.READY, function() {
     widgetReady = true;
     widget.setVolume(80);
   });
-
   widget.bind(SC.Widget.Events.FINISH, function() {
-    // Loop manually since widget doesn't loop via URL param reliably
     widget.seekTo(0);
     widget.play();
   });
 });
-
+ 
 function toggleMusic() {
   if (!widgetReady || !widget) return;
-
   if (!isPlaying) {
     widget.play();
     document.getElementById('music-btn').innerHTML = "❚❚";
@@ -643,11 +643,10 @@ function toggleMusic() {
     isPlaying = false;
   }
 }
-
+ 
 // ══════════════════════════════════════════
 //   DATA
 // ══════════════════════════════════════════
- 
 const QUESTIONS = [
   {
     text: "It's 2AM. Something just happened that really hurt you. You're alone. What do you actually do?",
@@ -679,100 +678,69 @@ const QUESTIONS = [
 ];
  
 const LANGUAGES = {
-  French: {
-    emoji: "🇫🇷",
-    tagline: "The Language of Depth",
-    reveal: "You turn emotion into meaning. You don't react first. You feel deep.",
-    desc: "You notice details others miss. Tone, timing, small shifts in behavior. You take your time before responding, and that makes your words stronger. You don't speak just to speak. You speak when it matters. You prefer depth over noise, and real conversations over empty ones. There is always more going on inside you than people see.",
-    color: "#c9a84c"
-  },
-  Japanese: {
-    emoji: "🇯🇵",
-    tagline: "The Language of Harmony",
-    reveal: "You stay composed, even when things get intense. You process before you show.",
-    desc: "You observe carefully before acting. You understand situations before stepping in. You are comfortable in silence, and you think clearly when things are calm. You don't need attention to exist. You choose your moments. People may see you as quiet, but you are extremely aware of everything around you. When you act, it is precise and intentional.",
-    color: "#c988a8"
-  },
-  German: {
-    emoji: "🇩🇪",
-    tagline: "The Language of Structure",
-    reveal: "You look for structure when things get messy. You want things to make sense.",
-    desc: "You naturally organize things, even under pressure. You prefer clarity, logic, and direct answers. When there is a problem, you break it down instead of avoiding it. People rely on you when something needs to be handled properly. You move forward with purpose and clear thinking.",
-    color: "#9cb89c"
-  },
-  Spanish: {
-    emoji: "🇪🇸",
-    tagline: "The Language of Energy",
-    reveal: "You react in the moment. You bring energy without trying.",
-    desc: "You express what you feel without holding back. Your presence is strong and easy to notice. You bring life into quiet or awkward situations. People feel comfortable around you because you are real and direct. You act fast, and your energy moves things forward.",
-    color: "#c94c4c"
-  },
-  Italian: {
-    emoji: "🇮🇹",
-    tagline: "The Language of Expression",
-    reveal: "You express yourself fully. People notice you without you trying.",
-    desc: "You communicate with more than words. Your tone, your reactions, your presence matter. You make interactions feel alive and dynamic. You naturally engage with people and step into the moment. You don't stay in the background for long. When you are there, the atmosphere changes.",
-    color: "#88c9a8"
-  }
+  French:   { emoji: "🇫🇷", tagline: "The Language of Depth",     reveal: "You turn emotion into meaning. You don't react first. You feel deep.", desc: "You notice details others miss. Tone, timing, small shifts in behavior. You take your time before responding, and that makes your words stronger. You don't speak just to speak. You speak when it matters. You prefer depth over noise, and real conversations over empty ones. There is always more going on inside you than people see." },
+  Japanese: { emoji: "🇯🇵", tagline: "The Language of Harmony",   reveal: "You stay composed, even when things get intense. You process before you show.", desc: "You observe carefully before acting. You understand situations before stepping in. You are comfortable in silence, and you think clearly when things are calm. You don't need attention to exist. You choose your moments. People may see you as quiet, but you are extremely aware of everything around you. When you act, it is precise and intentional." },
+  German:   { emoji: "🇩🇪", tagline: "The Language of Structure", reveal: "You look for structure when things get messy. You want things to make sense.", desc: "You naturally organize things, even under pressure. You prefer clarity, logic, and direct answers. When there is a problem, you break it down instead of avoiding it. People rely on you when something needs to be handled properly. You move forward with purpose and clear thinking." },
+  Spanish:  { emoji: "🇪🇸", tagline: "The Language of Energy",    reveal: "You react in the moment. You bring energy without trying.", desc: "You express what you feel without holding back. Your presence is strong and easy to notice. You bring life into quiet or awkward situations. People feel comfortable around you because you are real and direct. You act fast, and your energy moves things forward." },
+  Italian:  { emoji: "🇮🇹", tagline: "The Language of Expression",reveal: "You express yourself fully. People notice you without you trying.", desc: "You communicate with more than words. Your tone, your reactions, your presence matter. You make interactions feel alive and dynamic. You naturally engage with people and step into the moment. You don't stay in the background for long. When you are there, the atmosphere changes." }
 };
  
 // ══════════════════════════════════════════
 //   STATE
 // ══════════════════════════════════════════
 let currentUser = "";
-let userScores = {}; 
+let userScores = {};
 let currentQ = 0;
-let testStarted = false;
-let participants = {}; 
-let pollInterval = null;
 let isHost = false;
 let resultData = null;
+let unsubscribeStart = null;
  
 function initScores() {
-  userScores = {
-    French: 0,
-    Spanish: 0,
-    German: 0,
-    Japanese: 0,
-    Italian: 0
-  };
+  userScores = { French: 0, Spanish: 0, German: 0, Japanese: 0, Italian: 0 };
 }
  
 // ══════════════════════════════════════════
-//   SHARED SESSION
+//   FIREBASE HELPERS
 // ══════════════════════════════════════════
-function getSession() {
-  try { return JSON.parse(localStorage.getItem("slt_session") || "{}"); } catch { return {}; }
+function waitForFirebase(cb) {
+  if (window._firebaseReady) cb();
+  else document.addEventListener('firebaseReady', cb, { once: true });
 }
-function saveSession(data) {
-  localStorage.setItem("slt_session", JSON.stringify(data));
-}
-function initSession() {
-  if (!getSession().participants) saveSession({ started: false, participants: {}, results: {} });
+ 
+function dbRef(path)         { return window._ref(window._db, path); }
+function dbSet(path, value)  { return window._set(dbRef(path), value); }
+function dbUpdate(path, val) { return window._update(dbRef(path), val); }
+function dbListen(path, cb)  { return window._onValue(dbRef(path), cb); }
+function dbGet(path)         { return window._get(dbRef(path)); }
+ 
+function sanitizeKey(name) {
+  return name.replace(/[.#$\/\[\]\s]/g, "_");
 }
  
 // ══════════════════════════════════════════
-//   ACCESS GATE
+//   SCREEN
 // ══════════════════════════════════════════
-function enterAs(role) {
-  initSession();
-  document.getElementById("access-gate").style.display = "none";
-  if (role === "host") {
-    isHost = true;
-    showScreen("host");
-    startHostPolling();
-  } else {
-    showScreen("landing");
-  }
-}
- 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
  
 // ══════════════════════════════════════════
-//   LANDING → WAITING
+//   ACCESS GATE
+// ══════════════════════════════════════════
+function enterAs(role) {
+  document.getElementById("access-gate").style.display = "none";
+  if (role === "host") {
+    isHost = true;
+    showScreen("host");
+    waitForFirebase(startHostListening);
+  } else {
+    showScreen("landing");
+  }
+}
+ 
+// ══════════════════════════════════════════
+//   STUDENT FLOW
 // ══════════════════════════════════════════
 function enterSession() {
   const n = document.getElementById("name-input").value.trim();
@@ -780,91 +748,96 @@ function enterSession() {
   currentUser = n;
   document.getElementById("display-name").textContent = n;
  
-  const sess = getSession();
-  if (!sess.participants) sess.participants = {};
-  sess.participants[n] = { joined: true, language: null };
-  saveSession(sess);
+  waitForFirebase(() => {
+    dbSet(`session/participants/${sanitizeKey(n)}`, { name: n, joined: true, language: null });
+    showScreen("waiting");
  
-  showScreen("waiting");
- 
-  pollInterval = setInterval(() => {
-    const s = getSession();
-    if (s.started) {
-      clearInterval(pollInterval);
-      startQuiz();
-    }
-  }, 1000);
+    // Listen for host start signal
+    unsubscribeStart = dbListen("session/started", (snap) => {
+      if (snap.val() === true) {
+        if (unsubscribeStart) unsubscribeStart();
+        startQuiz();
+      }
+    });
+  });
 }
  
 // ══════════════════════════════════════════
-//   HOST CONTROLS
+//   HOST FLOW
 // ══════════════════════════════════════════
-function startHostPolling() {
-  setInterval(() => {
-    const sess = getSession();
-    const names = Object.keys(sess.participants || {});
+function startHostListening() {
+  dbListen("session/participants", (snap) => {
+    const data = snap.val() || {};
+    const entries = Object.values(data);
     const list = document.getElementById("names-list");
-    list.innerHTML = names.map(n => `<span class="name-tag">${n}</span>`).join("");
-    document.getElementById("join-count").textContent = `${names.length} PARTICIPANT${names.length !== 1 ? "S" : ""}`;
-  }, 1000);
+    list.innerHTML = entries.map(p => `<span class="name-tag">${p.name}</span>`).join("");
+    document.getElementById("join-count").textContent =
+      `${entries.length} PARTICIPANT${entries.length !== 1 ? "S" : ""}`;
+  });
 }
  
 function hostStartTest() {
-  const sess = getSession();
-  sess.started = true;
-  saveSession(sess);
-  document.getElementById("host-start-btn").textContent = "✓ Test Started";
-  document.getElementById("host-start-btn").disabled = true;
+  waitForFirebase(() => {
+    dbSet("session/started", true);
+    document.getElementById("host-start-btn").textContent = "✓ Test Started";
+    document.getElementById("host-start-btn").disabled = true;
+  });
 }
  
 function showResults() {
-  const sess = getSession();
-  const groups = {};
-  Object.entries(sess.participants || {}).forEach(([name, data]) => {
-    if (data.language) {
-      if (!groups[data.language]) groups[data.language] = [];
-      groups[data.language].push(name);
-    }
+  waitForFirebase(() => {
+    dbGet("session/participants").then((snap) => {
+      const data = snap.val() || {};
+      const groups = {};
+      Object.values(data).forEach(p => {
+        if (p.language) {
+          if (!groups[p.language]) groups[p.language] = [];
+          groups[p.language].push(p.name);
+        }
+      });
+ 
+      const container = document.getElementById("results-groups");
+      if (Object.keys(groups).length === 0) {
+        container.innerHTML = `<p style="font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(245,239,227,0.4);font-size:0.9rem;">No results yet — test may still be in progress.</p>`;
+        return;
+      }
+      container.innerHTML = Object.entries(groups).map(([lang, names]) => {
+        const ld = LANGUAGES[lang] || {};
+        return `<div class="lang-group" onclick='openLangModal("${lang}", ${JSON.stringify(names)})'>
+          <h3>${ld.emoji || ""} ${lang}</h3>
+          <ul>${names.map(n => `<li>${n}</li>`).join("")}</ul>
+        </div>`;
+      }).join("");
+    });
   });
- 
-  const container = document.getElementById("results-groups");
-  if (Object.keys(groups).length === 0) {
-    container.innerHTML = `<p style="font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(245,239,227,0.4);font-size:0.9rem;">No results yet — test may still be in progress.</p>`;
-    return;
-  }
- 
-  container.innerHTML = Object.entries(groups).map(([lang, names]) => {
-    const ld = LANGUAGES[lang] || {};
-    return `<div class="lang-group" onclick="openLangModal('${lang}','${names.join("', '")}')">
-      <h3>${ld.emoji || ""} ${lang}</h3>
-      <ul>${names.map(n => `<li>${n}</li>`).join("")}</ul>
-    </div>`;
-  }).join("");
 }
  
 function resetAll() {
   if (!confirm("Reset the entire session?")) return;
-  saveSession({ started: false, participants: {}, results: {} });
-  document.getElementById("names-list").innerHTML = "";
-  document.getElementById("results-groups").innerHTML = "";
-  document.getElementById("join-count").textContent = "0 PARTICIPANTS";
-  document.getElementById("host-start-btn").textContent = "▶ Start the Test";
-  document.getElementById("host-start-btn").disabled = false;
+  waitForFirebase(() => {
+    dbSet("session", { started: false, participants: {} });
+    document.getElementById("names-list").innerHTML = "";
+    document.getElementById("results-groups").innerHTML = "";
+    document.getElementById("join-count").textContent = "0 PARTICIPANTS";
+    document.getElementById("host-start-btn").textContent = "▶ Start the Test";
+    document.getElementById("host-start-btn").disabled = false;
+  });
 }
  
-function openLangModal(lang, namesStr) {
+function openLangModal(lang, names) {
   const ld = LANGUAGES[lang];
   if (!ld) return;
+  const nameList = Array.isArray(names) ? names : [names];
   document.getElementById("modal-title").textContent = `${ld.emoji} ${lang}`;
   document.getElementById("modal-tagline").textContent = ld.tagline;
   document.getElementById("modal-desc").textContent = ld.desc;
-  document.getElementById("modal-names").textContent = namesStr || "";
+  document.getElementById("modal-names").textContent = nameList.join(" · ");
   document.getElementById("lang-modal").classList.add("active");
 }
 function closeLangModal() { document.getElementById("lang-modal").classList.remove("active"); }
  
 // ══════════════════════════════════════════
-//   QUIZ FLOW
+//   QUIZ
 // ══════════════════════════════════════════
 function startQuiz() {
   currentQ = 0;
@@ -892,25 +865,14 @@ function selectAnswer(idx, el) {
   document.querySelectorAll(".choice").forEach(b => b.classList.remove("selected"));
   el.classList.add("selected");
  
-  const selectedChoice = QUESTIONS[currentQ].choices[idx];
-  const langKey = selectedChoice.lang;
-  
-  let points = 0;
-  if (currentQ === 0) points = 2;
-  else if (currentQ === 1) points = 1;
-  else if (currentQ === 2) points = 2;
-  
-  if (userScores.hasOwnProperty(langKey)) {
-    userScores[langKey] += points;
-  }
+  const langKey = QUESTIONS[currentQ].choices[idx].lang;
+  const points = currentQ === 1 ? 1 : 2;
+  if (userScores.hasOwnProperty(langKey)) userScores[langKey] += points;
  
   setTimeout(() => {
     currentQ++;
-    if (currentQ < QUESTIONS.length) {
-      showQuestion();
-    } else {
-      startProcessing();
-    }
+    if (currentQ < QUESTIONS.length) showQuestion();
+    else startProcessing();
   }, 600);
 }
  
@@ -919,51 +881,34 @@ function selectAnswer(idx, el) {
 // ══════════════════════════════════════════
 function startProcessing() {
   showScreen("processing");
-  
-  const lines = ["pl1", "pl2", "pl3", "pl4"];
-  lines.forEach(id => document.getElementById(id).classList.remove("visible"));
- 
+  ["pl1","pl2","pl3","pl4"].forEach(id => document.getElementById(id).classList.remove("visible"));
   setTimeout(() => document.getElementById("pl1").classList.add("visible"), 0);
   setTimeout(() => document.getElementById("pl2").classList.add("visible"), 1500);
   setTimeout(() => document.getElementById("pl3").classList.add("visible"), 3000);
   setTimeout(() => document.getElementById("pl4").classList.add("visible"), 4500);
- 
-  setTimeout(() => {
-    computeResult();
-    showResult();
-  }, 6500);
+  setTimeout(() => { computeResult(); showResult(); }, 6500);
 }
  
 // ══════════════════════════════════════════
-//   RESULT LOGIC
+//   RESULT
 // ══════════════════════════════════════════
 function computeResult() {
-  let highestLang = "French"; 
-  let maxScore = -1;
- 
+  let highestLang = "French", maxScore = -1;
   for (const [lang, score] of Object.entries(userScores)) {
-    if (score > maxScore) {
-      maxScore = score;
-      highestLang = lang;
-    }
+    if (score > maxScore) { maxScore = score; highestLang = lang; }
   }
+  resultData = { lang: highestLang };
  
-  resultData = { lang: highestLang, score: maxScore };
- 
-  const sess = getSession();
-  if (sess.participants && sess.participants[currentUser]) {
-    sess.participants[currentUser].language = highestLang;
-  }
-  saveSession(sess);
+  waitForFirebase(() => {
+    dbUpdate(`session/participants/${sanitizeKey(currentUser)}`, { language: highestLang });
+  });
 }
  
 function showResult() {
   showScreen("result");
-  const { lang } = resultData;
-  const ld = LANGUAGES[lang];
-  
+  const ld = LANGUAGES[resultData.lang];
   document.getElementById("result-emoji").textContent = ld.emoji;
-  document.getElementById("result-lang").textContent = lang;
+  document.getElementById("result-lang").textContent = resultData.lang;
   document.getElementById("result-tagline").textContent = ld.reveal;
   document.getElementById("result-desc").textContent = ld.desc;
 }
@@ -977,28 +922,22 @@ function showResult() {
   const glyphs = ["A","B","C","D","E","F","G","文","α","β","δ","Ω","∑","∞","✦","❋","✥"];
   let particles = [];
  
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   resize();
   window.addEventListener("resize", resize);
  
   for (let i = 0; i < 40; i++) {
     particles.push({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
+      x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
       g: glyphs[Math.floor(Math.random() * glyphs.length)],
       s: 10 + Math.random() * 22,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
+      vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
       o: 0.1 + Math.random() * 0.7
     });
   }
  
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = "400 18px 'Cinzel', serif";
     particles.forEach(p => {
       ctx.save();
       ctx.globalAlpha = p.o;
@@ -1016,15 +955,10 @@ function showResult() {
   }
   draw();
 })();
-
+ 
 document.getElementById("name-input").addEventListener("keydown", e => {
   if (e.key === "Enter") enterSession();
 });
 </script>
 </body>
 </html>
-
-
-
-
-
